@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
+from django.template.loader import render_to_string
 # Create your views here.
 
 
@@ -21,12 +23,34 @@ zodiac_dict = {
 }
 
 
+def index(request):
+    zodiac_list = list(zodiac_dict)
+    li_element = ''
+    for sign in zodiac_list:
+        redirect_path = reverse("zodiac_name", args=[sign])
+        li_element += f"<li><a href='{redirect_path}'>{sign}</a></li>"
+    response = f"""
+    <ul>
+    {li_element}
+    </ul>
+"""
+    return HttpResponse(response)
+
+
+def yyyy_number(request, sign_zodiac):
+    return HttpResponse(f'Your number is {sign_zodiac}')
+
+
+def float_number(request, sign_zodiac):
+    return HttpResponse(f'Your number is {sign_zodiac}')
+
+
+
+
 def get_info_about_zign_zodiac(request, sign_zodiac: str):
     description = zodiac_dict.get(sign_zodiac)
-    if description:
-        return HttpResponse(description)
-    else:
-        return HttpResponseNotFound(f'Неизвестный знак зодиака - {sign_zodiac}')
+    response = render_to_string('horoscope/info_zodiac.html')
+    return HttpResponse(response)
 
 
 def get_info_about_zign_zodiac_is_number(request, sign_zodiac: int):
@@ -34,4 +58,5 @@ def get_info_about_zign_zodiac_is_number(request, sign_zodiac: int):
     if sign_zodiac > len(zodiacs):
         return HttpResponseNotFound(f'Неизвестный порядковый номер знака зодиака - {sign_zodiac}')
     name_zodiac = zodiacs[sign_zodiac -1]
-    return HttpResponseRedirect(f'/horoscope/{name_zodiac}')
+    redirect_url = reverse("zodiac_name", args=(name_zodiac,))# функция reverse нужна чтобы обращаться к урлу по именни на случай если сам путь изменят
+    return HttpResponseRedirect(redirect_url)
