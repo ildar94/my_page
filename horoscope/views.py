@@ -49,8 +49,10 @@ def float_number(request, sign_zodiac):
 
 def get_info_about_zign_zodiac(request, sign_zodiac: str):
     description = zodiac_dict.get(sign_zodiac)
-    response = render_to_string('horoscope/info_zodiac.html')
-    return HttpResponse(response)
+    data = { 'description_zodiac' : description,
+             'sign' : sign_zodiac.title()
+             }
+    return render(request,'horoscope/info_zodiac.html', context=data)
 
 
 def get_info_about_zign_zodiac_is_number(request, sign_zodiac: int):
