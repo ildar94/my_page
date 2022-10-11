@@ -6,6 +6,11 @@
 </head>
 <body>
     <h1>Приложение гороскоп</h1>
-    <h2>{{ description_zodiac }}</h2>
+    {% if description_zodiac is None %}
+        Неправильный знак зодиака - {{ sign }}
+    {% else %}
+        <h2>{{ description_zodiac }}</h2>
+    {% endif %}
+
 </body>
 </html>
